@@ -6,7 +6,7 @@ import de.mirko_werner.testdata.persistence.models.Payment;
 
 import java.util.List;
 
-import static de.mirko_werner.testdata.config.FilePaths.PATH_TO_PAYMENT_CSV;
+import static de.mirko_werner.testdata.config.FilePaths.*;
 
 public class PaymentRepository extends AbstractCsvRepository {
 

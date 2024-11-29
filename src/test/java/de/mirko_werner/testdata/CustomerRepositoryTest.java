@@ -1,18 +1,12 @@
 package de.mirko_werner.testdata;
 
-import de.mirko_werner.testdata.persistence.models.Address;
 import de.mirko_werner.testdata.persistence.models.Customer;
-import de.mirko_werner.testdata.persistence.models.Login;
-import de.mirko_werner.testdata.persistence.models.Payment;
 import de.mirko_werner.testdata.repositories.AddressRepository;
 import de.mirko_werner.testdata.repositories.CustomerRepository;
 import de.mirko_werner.testdata.repositories.LoginRepository;
 import de.mirko_werner.testdata.repositories.PaymentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;

@@ -4,7 +4,7 @@ import de.mirko_werner.testdata.persistence.enums.PaymentCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Payment;
 import org.apache.commons.csv.CSVRecord;
 
-public class PaymentCsvMapper implements ITestdataCsvMapper {
+public class PaymentCsvMapper implements ITestdataCsvMapper<Payment> {
 
     private static PaymentCsvMapper instance = new PaymentCsvMapper();
 

@@ -5,7 +5,7 @@ import de.mirko_werner.testdata.persistence.enums.PaymentCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Login;
 import org.apache.commons.csv.CSVRecord;
 
-public class LoginCsvMapper implements ITestdataCsvMapper {
+public class LoginCsvMapper implements ITestdataCsvMapper<Login> {
 
     private static LoginCsvMapper instance = new LoginCsvMapper();
 
