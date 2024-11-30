@@ -4,6 +4,11 @@ import de.mirko_werner.testdata.persistence.enums.AddressCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Address;
 import org.apache.commons.csv.CSVRecord;
 
+/**
+ * @author Mirko Werner
+ *
+ * Mapping from csv-entry into address object.
+ */
 public class AddressCsvMapper implements ITestdataCsvMapper<Address> {
 
     private static AddressCsvMapper instance;

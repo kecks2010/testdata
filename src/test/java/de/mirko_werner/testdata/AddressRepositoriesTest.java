@@ -12,7 +12,7 @@ public class AddressRepositoriesTest {
 
     private final AddressRepository addressRepository = AddressRepository.getInstance();
 
-    @DisplayName("Get address for id")
+    @DisplayName("Get address for existing id")
     @Test
     void testGetAddress() {
         Address address = new Address(1L, "Karolinenpl.", "5", "64289", "Darmstadt",
@@ -29,7 +29,7 @@ public class AddressRepositoriesTest {
         assertThat(addressRepository.getAddress(0), is(nullValue()));
     }
 
-    @DisplayName("Get addressList for customerId")
+    @DisplayName("Get addressList for existing customerId")
     @Test
     void testGetAddressListForCustomerId() {
 

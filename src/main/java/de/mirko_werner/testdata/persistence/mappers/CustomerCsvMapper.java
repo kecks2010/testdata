@@ -4,6 +4,11 @@ import de.mirko_werner.testdata.persistence.enums.CustomerCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Customer;
 import org.apache.commons.csv.CSVRecord;
 
+/**
+ * @author Mirko Werner
+ *
+ * Mapping from csv-entry into customer object.
+ */
 public class CustomerCsvMapper implements ITestdataCsvMapper<Customer> {
 
     private static CustomerCsvMapper instance;

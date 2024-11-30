@@ -5,8 +5,13 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * @author Mirko Werner
+ *
+ * Class for Customer objects.
+ */
 @Getter
-public class Customer {
+public final class Customer {
 
     private final long id;
     private final String gender;
@@ -26,6 +31,21 @@ public class Customer {
     @Setter
     private List<Login> loginList;
 
+    /**
+     * Constructor for Customer objects
+     *
+     * @param id of the customer entry
+     * @param gender of the customer entry
+     * @param firstName of the customer entry
+     * @param lastName of the customer entry
+     * @param birthDate of the customer entry
+     * @param birthPlace of the customer entry
+     * @param deathDate of the customer entry
+     * @param deathPlace of the customer entry
+     * @param phoneNumber of the customer entry
+     * @param mobilePhoneNumber of the customer entry
+     * @param emailAddress of the customer entry
+     */
     public Customer(long id, String gender, String firstName, String lastName, String birthDate, String birthPlace,
                     String deathDate, String deathPlace, String phoneNumber, String mobilePhoneNumber,
                     String emailAddress) {
