@@ -8,6 +8,11 @@ import java.util.List;
 
 import static de.mirko_werner.testdata.config.FilePaths.PATH_TO_CUSTOMER_CSV;
 
+/**
+ * @author Mirko Werner
+ * A repository with a list of customer objects where you can search for
+ * a specific customer or a customer with specific characteristics.
+ */
 public class CustomerRepository extends AbstractCsvRepository {
 
     private static CustomerRepository customerRepository;
@@ -37,6 +42,7 @@ public class CustomerRepository extends AbstractCsvRepository {
     }
 
     public Customer getCustomer(String firstName, String lastName) {
+        if (firstName == null || lastName == null) {throw new NullPointerException("firstName and lastName cannot be null");}
         return customerList.stream()
                 .filter(customer -> customer.getFirstName().equals(firstName))
                 .filter(customer -> customer.getLastName().equals(lastName)).findFirst()

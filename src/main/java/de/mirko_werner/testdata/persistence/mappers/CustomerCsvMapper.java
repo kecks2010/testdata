@@ -4,6 +4,10 @@ import de.mirko_werner.testdata.persistence.enums.CustomerCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Customer;
 import org.apache.commons.csv.CSVRecord;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * @author Mirko Werner
  *
@@ -29,13 +33,27 @@ public class CustomerCsvMapper implements ITestdataCsvMapper<Customer> {
                 record.get(CustomerCsvHeader.gender),
                 record.get(CustomerCsvHeader.firstName),
                 record.get(CustomerCsvHeader.lastName),
-                record.get(CustomerCsvHeader.birthDate),
+                convertDateAsStringToDate(record.get(CustomerCsvHeader.birthDate)),
                 record.get(CustomerCsvHeader.birthPlace),
-                record.get(CustomerCsvHeader.deathDate),
+                convertDateAsStringToDate(record.get(CustomerCsvHeader.deathDate)),
                 record.get(CustomerCsvHeader.deathPlace),
                 record.get(CustomerCsvHeader.phoneNumber),
                 record.get(CustomerCsvHeader.mobilePhoneNumber),
                 record.get(CustomerCsvHeader.emailAddress)
         );
     }
+
+    private Date convertDateAsStringToDate(String dateAsString) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date;
+        try {
+            date = simpleDateFormat.parse(dateAsString);
+        } catch (ParseException e) {
+            date = null;
+        }
+
+        return date;
+    }
+
+
 }

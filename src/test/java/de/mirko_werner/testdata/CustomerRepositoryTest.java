@@ -8,8 +8,12 @@ import de.mirko_werner.testdata.repositories.PaymentRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CustomerRepositoryTest {
 
@@ -20,11 +24,9 @@ public class CustomerRepositoryTest {
 
     @DisplayName("Get customer for id")
     @Test
-    public void getCustomerForId() {
+    public void getCustomerForId() throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Customer customer = customerRepository.getCustomer(1);
-        new Customer(1L,"male","Harry", "Potter", "1980-07-31",
-                "Godric's Hollow","", "", "+13225558531",
-                "+491731234567", "harry.potter@mirko-werner.de");
         customer.setAddressList(addressRepository.getAddressListForCustomerId(1));
         customer.setPaymentList(paymentRepository.getPaymentListForCustomerId(1));
         customer.setLoginList(loginRepository.getLoginListForCustomerId(1));
@@ -34,9 +36,9 @@ public class CustomerRepositoryTest {
         assertThat(customer.getGender(),is("male"));
         assertThat(customer.getFirstName(),is("Harry"));
         assertThat(customer.getLastName(),is("Potter"));
-        assertThat(customer.getBirthDate(),is("1980-07-31"));
+        assertThat(customer.getBirthDate(),is(simpleDateFormat.parse("1980-07-31")));
         assertThat(customer.getBirthPlace(),is("Godric's Hollow"));
-        assertThat(customer.getDeathDate(),is(""));
+        assertThat(customer.getDeathDate(),is(nullValue()));
         assertThat(customer.getDeathPlace(),is(""));
         assertThat(customer.getPhoneNumber(),is("+13225558531"));
         assertThat(customer.getMobileNumber(),is("+491731234567"));
@@ -55,23 +57,18 @@ public class CustomerRepositoryTest {
 
     @DisplayName("Get customer for firstname and lastname")
     @Test
-    public void getCustomerForFirstNameAndLastName() {
+    public void getCustomerForFirstNameAndLastName() throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Customer customer = customerRepository.getCustomer("Harry", "Potter");
-        new Customer(1L,"male","Harry", "Potter", "1980-07-31",
-                "Godric's Hollow","", "", "+13225558531",
-                "+491731234567", "harry.potter@mirko-werner.de");
-        customer.setAddressList(addressRepository.getAddressListForCustomerId(1));
-        customer.setPaymentList(paymentRepository.getPaymentListForCustomerId(1));
-        customer.setLoginList(loginRepository.getLoginListForCustomerId(1));
 
         assertThat(customer,is(notNullValue()));
         assertThat(customer.getId(),is(1L));
         assertThat(customer.getGender(),is("male"));
         assertThat(customer.getFirstName(),is("Harry"));
         assertThat(customer.getLastName(),is("Potter"));
-        assertThat(customer.getBirthDate(),is("1980-07-31"));
+        assertThat(customer.getBirthDate(),is(simpleDateFormat.parse("1980-07-31")));
         assertThat(customer.getBirthPlace(),is("Godric's Hollow"));
-        assertThat(customer.getDeathDate(),is(""));
+        assertThat(customer.getDeathDate(),is(nullValue()));
         assertThat(customer.getDeathPlace(),is(""));
         assertThat(customer.getPhoneNumber(),is("+13225558531"));
         assertThat(customer.getMobileNumber(),is("+491731234567"));
@@ -79,5 +76,21 @@ public class CustomerRepositoryTest {
         assertThat(customer.getAddressList(),is(addressRepository.getAddressListForCustomerId(1)));
         assertThat(customer.getPaymentList(),is(paymentRepository.getPaymentListForCustomerId(1)));
         assertThat(customer.getLoginList(),is(loginRepository.getLoginListForCustomerId(1)));
+    }
+
+    @DisplayName("Get customer for firstname as null and lastname")
+    @Test
+    public void getCustomerForFirstNameAsNullAndLastName() {
+        Throwable exception = assertThrows(NullPointerException.class,
+                () -> customerRepository.getCustomer(null, "Potter"));
+        assertThat(exception.getMessage(), is("firstName and lastName cannot be null"));
+    }
+
+    @DisplayName("Get customer for firstname and lastname as null")
+    @Test
+    public void getCustomerForFirstNameAndLastNameAsNull() {
+        Throwable exception = assertThrows(NullPointerException.class,
+                () -> customerRepository.getCustomer("Harry", null));
+        assertThat(exception.getMessage(), is("firstName and lastName cannot be null"));
     }
 }

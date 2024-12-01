@@ -3,6 +3,7 @@ package de.mirko_werner.testdata.persistence.models;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,9 +18,9 @@ public final class Customer {
     private final String gender;
     private final String firstName;
     private final String lastName;
-    private final String birthDate;
+    private final Date birthDate;
     private final String birthPlace;
-    private final String deathDate;
+    private final Date deathDate;
     private final String deathPlace;
     private final String phoneNumber;
     private final String mobileNumber;
@@ -46,8 +47,8 @@ public final class Customer {
      * @param mobilePhoneNumber of the customer entry
      * @param emailAddress of the customer entry
      */
-    public Customer(long id, String gender, String firstName, String lastName, String birthDate, String birthPlace,
-                    String deathDate, String deathPlace, String phoneNumber, String mobilePhoneNumber,
+    public Customer(long id, String gender, String firstName, String lastName, Date birthDate, String birthPlace,
+                    Date deathDate, String deathPlace, String phoneNumber, String mobilePhoneNumber,
                     String emailAddress) {
         this.id = id;
         this.gender = gender;

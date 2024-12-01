@@ -8,6 +8,11 @@ import java.util.List;
 
 import static de.mirko_werner.testdata.config.FilePaths.*;
 
+/**
+ * @author Mirko Werner
+ * A repository with a list of payment objects where you can search for
+ * a specific payment object or a list of payment objects for a specific customer.
+ */
 public class PaymentRepository extends AbstractCsvRepository {
 
     private static PaymentRepository paymentRepository;

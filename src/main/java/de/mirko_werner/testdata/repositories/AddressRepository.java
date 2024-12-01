@@ -8,6 +8,11 @@ import java.util.List;
 
 import static de.mirko_werner.testdata.config.FilePaths.*;
 
+/**
+ * @author Mirko Werner
+ * A repository with a list of address objects where you can search for
+ * a specific address onject or a list of address objects for a specific customer.
+ */
 public class AddressRepository extends AbstractCsvRepository {
 
     private static AddressRepository addressRepository;

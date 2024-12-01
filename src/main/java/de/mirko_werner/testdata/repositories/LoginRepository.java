@@ -8,6 +8,11 @@ import java.util.List;
 
 import static de.mirko_werner.testdata.config.FilePaths.PATH_TO_LOGIN_CSV;
 
+/**
+ * @author Mirko Werner
+ * A repository with a list of logom objects where you can search for
+ * a specific login object or a list of login objects for a specific customer.
+ */
 public class LoginRepository extends AbstractCsvRepository {
 
     private static LoginRepository loginRepository;

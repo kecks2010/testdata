@@ -12,6 +12,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Mirko Werner
+ *
+ * Abstract class to create a repository with a list of objects from a given csv file.
+ */
 public class AbstractCsvRepository {
 
     protected <T> List<T> readCsvEntriesAndConvert(String filePath, Class<? extends Enum<?>> header, ITestdataCsvMapper<T> mapper) {
@@ -20,8 +25,7 @@ public class AbstractCsvRepository {
         try {
             try (InputStream in = getClass().getResourceAsStream(filePath)) {
                 assert in != null;
-                BufferedReader bufferedReader = new BufferedReader(
-                        new InputStreamReader(in, StandardCharsets.UTF_8));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
                 final CSVFormat csvFormat = CSVFormat.Builder.create().setDelimiter(",").build();
                 Iterable<CSVRecord> csvRecords = csvFormat.builder()
                         .setHeader(header)
