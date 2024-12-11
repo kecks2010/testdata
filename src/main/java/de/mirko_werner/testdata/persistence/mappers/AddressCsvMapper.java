@@ -2,6 +2,7 @@ package de.mirko_werner.testdata.persistence.mappers;
 
 import de.mirko_werner.testdata.persistence.enums.AddressCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Address;
+import de.mirko_werner.testdata.persistence.models.Country;
 import org.apache.commons.csv.CSVRecord;
 
 /**
@@ -31,7 +32,7 @@ public class AddressCsvMapper implements ITestdataCsvMapper<Address> {
                 record.get(AddressCsvHeader.postalCode),
                 record.get(AddressCsvHeader.city),
                 record.get(AddressCsvHeader.state),
-                record.get(AddressCsvHeader.country),
+                Country.getCountryByName(record.get(AddressCsvHeader.country)),
                 record.get(AddressCsvHeader.addressType),
                 Long.parseLong(record.get(AddressCsvHeader.customerId)));
     }

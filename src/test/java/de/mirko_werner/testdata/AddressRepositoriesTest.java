@@ -1,6 +1,7 @@
 package de.mirko_werner.testdata;
 
 import de.mirko_werner.testdata.persistence.models.Address;
+import de.mirko_werner.testdata.persistence.models.Country;
 import de.mirko_werner.testdata.repositories.AddressRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ public class AddressRepositoriesTest {
     @Test
     void testGetAddress() {
         Address address = new Address(1L, "Karolinenpl.", "5", "64289", "Darmstadt",
-                "Hessen", "Germany", "primary", 1L);
+                "Hessen", Country.getCountryByName("Germany"), "primary", 1L);
 
         assertThat(addressRepository.getAddress(1), is(notNullValue()));
         assertThat(addressRepository.getAddress(1), is(address));
