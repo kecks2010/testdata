@@ -18,7 +18,7 @@ public class AddressRepositoriesTest {
     @Test
     void testGetAddress() {
         Address address = new Address(1L, "Karolinenpl.", "5", "64289", "Darmstadt",
-                State.getStateByName("Hessen"), Country.getCountryByName("Germany"), "primary", 1L);
+                State.getStateByName("Hesse"), Country.getCountryByName("Germany"), "primary", 1L);
 
         assertThat(addressRepository.getAddress(1), is(notNullValue()));
         assertThat(addressRepository.getAddress(1), is(address));
