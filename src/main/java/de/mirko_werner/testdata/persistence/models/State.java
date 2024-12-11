@@ -9,19 +9,19 @@ public enum State {
     DE_BB("Brandenburg","DE-BB","BB"),
     DE_BE("Berlin","DE-BE","BE"),
     DE_BW("Baden-Württemberg","DE-BW","BW"),
-    DE_BY("Bayern","DE-BY","BY"),
+    DE_BY("Bavaria","DE-BY","BY"),
     DE_HB("Bremen","DE-HB","HB"),
-    DE_HE("Hessen","DE-HE","HE"),
+    DE_HE("Hesse","DE-HE","HE"),
     DE_HH("Hamburg","DE-HH","HH"),
     DE_MV("Mecklenburg-Vorpommern","DE-MV","MV"),
-    DE_NI("Niedersachsen","DE-NI","NI"),
-    DE_NW("Nordrhein-Westfalen","DE-NW","NW"),
-    DE_RP("Rheinland-Pfalz","DE-RP","RP"),
+    DE_NI("Lower Saxony","DE-NI","NI"),
+    DE_NW("North Rhine-Westphalia","DE-NW","NW"),
+    DE_RP("Rhineland-Palatinate","DE-RP","RP"),
     DE_SH("Schleswig-Holstein","DE-SH","SH"),
     DE_SL("Saarland","DE-SL","SL"),
-    DE_SN("Sachsen","DE-SN","SN"),
-    DE_ST("Sachsen-Anhalt","DE-ST","ST"),
-    DE_TH("Thüringen","DE-TH","TH");
+    DE_SN("Saxony","DE-SN","SN"),
+    DE_ST("Saxony-Anhalt","DE-ST","ST"),
+    DE_TH("Thuringia","DE-TH","TH");
 
 
     private final String name;
