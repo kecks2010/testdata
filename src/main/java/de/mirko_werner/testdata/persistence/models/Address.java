@@ -14,7 +14,7 @@ package de.mirko_werner.testdata.persistence.models;
  * @param addressType of the address entry. Can be primary, secondary or pre.
  * @param customerId Id of the customer, where the address entry is linked to.
  */
-public record Address(long id, String street, String number, String postalCode, String city, String state,
+public record Address(long id, String street, String number, String postalCode, String city, State state,
                       Country country, String addressType, long customerId) {
 
     public boolean isPrimaryAddress() {
