@@ -1,4 +1,4 @@
-package de.mirko_werner.testdata.persistence.models;
+package de.mirko_werner.testdata.persistence.enums;
 
 import lombok.Getter;
 

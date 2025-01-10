@@ -2,8 +2,8 @@ package de.mirko_werner.testdata.persistence.mappers;
 
 import de.mirko_werner.testdata.persistence.enums.AddressCsvHeader;
 import de.mirko_werner.testdata.persistence.models.Address;
-import de.mirko_werner.testdata.persistence.models.Country;
-import de.mirko_werner.testdata.persistence.models.State;
+import de.mirko_werner.testdata.persistence.enums.Country;
+import de.mirko_werner.testdata.persistence.enums.State;
 import org.apache.commons.csv.CSVRecord;
 
 /**
