@@ -5,6 +5,24 @@ import de.mirko_werner.testdata.model.idcard.IdCard;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author Mirko Werner
+ * This class contains methods to create an idCard object for several idCard types.
+ * - Old Identity Card
+ * - New Identity Card without Version
+ * - New Identity Card with Version
+ * - Passport
+ * - Temporary Passport
+ * - Children Passport
+ *
+ * If you want to get an ID card with a specific date of birth and/or a specific expiration date,
+ * you must be sure that the date is valid. Normally you must be 16 years old to get an ID card
+ * and the expiration date must not have passed. Otherwise, data checks may fail.
+ *
+ * For passports, you need a gender, but the gender has no effect of the generated data.
+ *
+ * IMPORTANT: Actual only german identity cards and passports are supported!
+ */
 public class IdCardGenerator {
 
     private static IdCardGenerator idCardGenerator;
@@ -125,23 +143,24 @@ public class IdCardGenerator {
                 generateCheckDigit(birthday.format(dateTimeFormatter));
         String tempExpiryDate = dateTimeFormatter.format(expirationDate);
         String expiryDate = tempExpiryDate + generateCheckDigit(tempExpiryDate);
+        String checkDigit = generateCheckDigit(documentnumber + birthdate + expiryDate);
 
         if (idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITHOUT_VERSION ||
                 idCardType == IdCard.IdCardType.OLD_IDENTITY_CARD) {
-            String checkDigit = generateCheckDigit(documentnumber + birthdate + expiryDate);
-
             return new IdCard(documentnumber, birthdate, expiryDate, checkDigit, idCardType);
+        }
+        if (idCardType == IdCard.IdCardType.TEMPORARY_PASSPORT || idCardType == IdCard.IdCardType.CHILDREN_PASSPORT) {
+            return new IdCard(documentnumber, birthdate, gender, expiryDate, checkDigit, idCardType);
         }
 
         String version = generateVersion();
-        String checkDigit = generateCheckDigit(documentnumber + birthdate + expiryDate + version);
+        checkDigit = generateCheckDigit(documentnumber + birthdate + expiryDate + version);
 
         if (idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITH_VERSION) {
 
             return new IdCard(documentnumber, birthdate, expiryDate, version, checkDigit, idCardType);
         }
-        if (idCardType == IdCard.IdCardType.PASSPORT || idCardType == IdCard.IdCardType.TEMPORARY_PASSPORT ||
-            idCardType == IdCard.IdCardType.CHILDREN_PASSPORT) {
+        if (idCardType == IdCard.IdCardType.PASSPORT) {
             return new IdCard(documentnumber, birthdate, gender, expiryDate, version, checkDigit, idCardType);
         }
 
@@ -154,16 +173,18 @@ public class IdCardGenerator {
         }
         if (idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITHOUT_VERSION ||
                 idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITH_VERSION) {
-            return generateLetterIdentityCard() + generateDocumentnumber(false);
+            return generateLetterIdentityCard() + generateDocumentnumber();
         }
         if (idCardType == IdCard.IdCardType.PASSPORT) {
-            return generateLetterPassport() + generateDocumentnumber(false);
+            return generateLetterPassport() + generateDocumentnumber();
         }
         if (idCardType == IdCard.IdCardType.TEMPORARY_PASSPORT) {
-            return generateLetterTemporaryPassport() + generateDocumentnumber(true);
+            return generateLetterTemporaryPassport() + "<" + generateAuthorityCode() +
+                    generateIdNumber().substring(0, 3);
         }
         if (idCardType == IdCard.IdCardType.CHILDREN_PASSPORT) {
-            return generateLetterChildrenPassport() + generateDocumentnumber(true);
+            return generateLetterChildrenPassport() + "<" + generateAuthorityCode() +
+                    generateIdNumber().substring(0, 3);
         }
         throw new IllegalStateException("Unexpected idCard type: " + idCardType);
     }
@@ -226,14 +247,13 @@ public class IdCardGenerator {
         return String.valueOf(authorityCode).substring(1);
     }
 
-    private String generateDocumentnumber(boolean isShort) {
-        char[] letters = {'C','F','G','H','J','K','L','M','N','P','R','T','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9'};
+    private String generateDocumentnumber() {
+        char[] letters = {'C','F','G','H','J','K','L','M','N','P','R','T','V','W','X','Y','Z','1','2','3','4','5','6',
+                '7','8','9'};
 
         StringBuilder documentnumber = new StringBuilder();
 
-        int length = isShort ? 6 : 8;
-
-        for (int counter = 0; counter < length; counter++) {
+        for (int counter = 0; counter < 8; counter++) {
             int position = (int) (Math.random() * letters.length);
             documentnumber.append(letters[position]);
         }
@@ -242,8 +262,11 @@ public class IdCardGenerator {
 
     private String generateVersion() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyMM");
+        String version = LocalDate.now().format(dateTimeFormatter);
 
-        return dateTimeFormatter.format(LocalDate.now());
+        if (idCardType.equals(IdCard.IdCardType.PASSPORT)) {
+            return version + "<<<<<<<<<<" + this.generateCheckDigit(version + "<<<<<<<<<<");
+        } else return version;
     }
 
     public String generateCheckDigit(String input) {
@@ -255,7 +278,9 @@ public class IdCardGenerator {
                 checkDigit += (((int) input.charAt(positionInString) - 55) * weight[positionInString % 3]) % 10;
             }
             else {
-                checkDigit += (((int) input.charAt(positionInString) - 48) * weight[positionInString % 3]) % 10;
+                if (input.charAt(positionInString) != '<') {
+                    checkDigit += Character.getNumericValue(input.charAt(positionInString)) * weight[positionInString % 3];
+                }
             }
         }
         return String.valueOf(checkDigit % 10);

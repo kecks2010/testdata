@@ -5,11 +5,24 @@ import de.mirko_werner.testdata.model.idcard.IdCard;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * @author Mirko Werner
+ * This class contains methods to validate an idCard object for several idCard types like
+ * - Old Identity Card
+ * - New Identity Card without Version
+ * - New Identity Card with Version
+ * - Passport
+ * - Temporary Passport
+ * - Children Passport
+ * document number, birthdate and expirydate.
+ *
+ * IMPORTANT: Actual only german identity cards and passports are supported!
+ */
 public class IdCardValidator {
 
     private static IdCardValidator idCardValidator;
     private final IdCardGenerator idCardGenerator;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     private IdCardValidator() {
         this.idCardGenerator = IdCardGenerator.getInstance();
@@ -23,96 +36,90 @@ public class IdCardValidator {
     }
 
     public boolean isIdCardValid(IdCard idCard) {
+        boolean valid = isSerialnumberValid(idCard.getDocumentnumber(), idCard.getType()) &&
+                isBirthdayValid(idCard.getBirthDate()) && isExpirationDateValid(idCard.getExpiryDate());
         switch (idCard.getType()) {
-            case OLD_IDENTITY_CARD, NEW_IDENTITY_CARD_WITHOUT_VERSION -> {
-                return checkIdCardWithoutVersion(idCard);
+            case OLD_IDENTITY_CARD, NEW_IDENTITY_CARD_WITHOUT_VERSION, CHILDREN_PASSPORT, TEMPORARY_PASSPORT -> {
+                return valid && checkCheckDigitIdCardWithoutVersion(idCard);
             }
-            case NEW_IDENTITY_CARD_WITH_VERSION, PASSPORT, CHILDREN_PASSPORT, TEMPORARY_PASSPORT -> {
-                return checkIdCardWithVersion(idCard);
+            case NEW_IDENTITY_CARD_WITH_VERSION, PASSPORT -> {
+                return valid && checkCheckDigitIdCardWithVersion(idCard);
             }
-            default -> throw new IllegalArgumentException("IdCard type " + idCard.getType() + " not supported yet");
+            default -> throw new IllegalArgumentException("IdCard type " + idCard.getType() + " not supported");
         }
     }
 
     public boolean isSerialnumberValid(String documentnumber, IdCard.IdCardType idCardType) {
-        System.out.println(idCardType);
-        System.out.println(documentnumber);
-        System.out.println(documentnumber.length() == 10);
-        System.out.println(this.notContainsIllegalCharcaters(documentnumber, idCardType));
-        System.out.println(this.checkFirstDigit(documentnumber, idCardType));
-
-        boolean valid = this.idCardGenerator.generateCheckDigit(documentnumber.substring(0, documentnumber.length()-1))
-                .contains(documentnumber.substring(documentnumber.length()-1));
-
-        System.out.println(valid);
-        if (valid && (idCardType == IdCard.IdCardType.TEMPORARY_PASSPORT ||
-                idCardType == IdCard.IdCardType.CHILDREN_PASSPORT)) {
-            valid = documentnumber.length() == 8 && documentnumber.substring(1).matches("[0-9]+");
-
-        }
-        if (valid && (idCardType == IdCard.IdCardType.OLD_IDENTITY_CARD || idCardType == IdCard.IdCardType.PASSPORT ||
-                idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITHOUT_VERSION ||
-                idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITH_VERSION)) {
-            valid = documentnumber.length() == 10 &&
-                    this.notContainsIllegalCharcaters(documentnumber, idCardType) &&
-                    this.checkFirstDigit(documentnumber, idCardType);
-        }
-        return valid;
+        return this.idCardGenerator.generateCheckDigit(documentnumber.substring(0, documentnumber.length()-1))
+                .contains(documentnumber.substring(documentnumber.length()-1)) &&
+                documentnumber.length() == 10 && this.notContainsIllegalCharcaters(documentnumber, idCardType) &&
+                this.checkFirstDigit(documentnumber, idCardType);
     }
 
-    public boolean checkBirthday(String birthdayWithCheckdigit) {
-        if (birthdayWithCheckdigit.length() != 7) return false;
-        String birthdayWithoutCheckdigit = birthdayWithCheckdigit.substring(0, birthdayWithCheckdigit.length()-1);
+    public boolean isBirthdayValid(String birthday) {
+        if (birthday.length() != 7) return false;
+        String birthdayWithoutCheckdigit = birthday.substring(0, birthday.length()-1);
+        if (Integer.parseInt(birthday.substring(0,2)) > LocalDate.now().getYear() % 100) {
+            birthdayWithoutCheckdigit = 19 + birthdayWithoutCheckdigit;
+        } else birthdayWithoutCheckdigit = 20 + birthdayWithoutCheckdigit;
         LocalDate birthDate = LocalDate.parse(birthdayWithoutCheckdigit, formatter);
 
-        return birthDate.isBefore(LocalDate.now().minusYears(16)) &&
-                idCardGenerator.generateCheckDigit(birthdayWithoutCheckdigit)
-                        .contains(birthdayWithCheckdigit.substring(birthdayWithCheckdigit.length()-1));
+        return birthDate.isBefore(LocalDate.now().minusYears(16).plusDays(1)) &&
+                idCardGenerator.generateCheckDigit(birthday.substring(0, birthday.length()-1))
+                        .contains(birthday.substring(birthday.length()-1));
     }
 
-    public boolean expirationDate(String expirationDateWithCheckdigit) {
-        if (expirationDateWithCheckdigit.length() != 7) return false;
-        String expirationDateWithoutCheckdigit = expirationDateWithCheckdigit
-                .substring(0, expirationDateWithCheckdigit.length()-1);
-        LocalDate expirationDate = LocalDate.parse(expirationDateWithoutCheckdigit, formatter);
+    public boolean isExpirationDateValid(String expirationDate) {
+        if (expirationDate.length() != 7) return false;
+        String expirationDateWithoutCheckdigit = expirationDate
+                .substring(0, expirationDate.length()-1);
+        expirationDateWithoutCheckdigit = 20 + expirationDateWithoutCheckdigit;
+        LocalDate expirationDateLocaldate = LocalDate.parse(expirationDateWithoutCheckdigit, formatter);
 
-        return expirationDate.isBefore(LocalDate.now()) &&
-                idCardGenerator.generateCheckDigit(expirationDateWithoutCheckdigit)
-                        .contains(expirationDateWithCheckdigit.substring(1));
+        return expirationDateLocaldate.isAfter(LocalDate.now().minusDays(1)) &&
+                idCardGenerator.generateCheckDigit(expirationDate.substring(0, expirationDate.length()-1))
+                        .contains(expirationDate.substring(expirationDate.length()-1));
     }
 
     private boolean notContainsIllegalCharcaters(String documentnumber, IdCard.IdCardType idCardType) {
-        if (idCardType == IdCard.IdCardType.OLD_IDENTITY_CARD) {
-            return documentnumber.matches("[0-9]+");
-        } else {
-            return !documentnumber.substring(1).matches("[AEIOUBDQS]+");
+        switch (idCardType) {
+            case OLD_IDENTITY_CARD, TEMPORARY_PASSPORT, CHILDREN_PASSPORT -> {
+                return documentnumber.substring(2).matches("[0-9]+");
+            }
+            case NEW_IDENTITY_CARD_WITHOUT_VERSION, NEW_IDENTITY_CARD_WITH_VERSION, PASSPORT -> {
+                return documentnumber.substring(1).matches("^[^AEIOUBDQS]+");
+            }
+            default -> throw new IllegalArgumentException("IdCard type " + idCardType + " not supported");
         }
     }
 
     private boolean checkFirstDigit(String documentnumber, IdCard.IdCardType idCardType) {
-        if (idCardType == IdCard.IdCardType.OLD_IDENTITY_CARD) return Character.isDigit(documentnumber.charAt(0));
-        if (idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITHOUT_VERSION ||
-                idCardType == IdCard.IdCardType.NEW_IDENTITY_CARD_WITH_VERSION) {
-            return Character.toString(documentnumber.charAt(0)).matches("[LMNPRTVWXY]");
+        switch (idCardType) {
+            case OLD_IDENTITY_CARD -> {
+                return Character.isDigit(documentnumber.charAt(0));
+            }
+            case NEW_IDENTITY_CARD_WITHOUT_VERSION, NEW_IDENTITY_CARD_WITH_VERSION -> {
+                return Character.toString(documentnumber.charAt(0)).matches("[LMNPRTVWXY]");
+            }
+            case CHILDREN_PASSPORT -> {
+                return Character.toString(documentnumber.charAt(0)).matches("[EFG]");
+            }
+            case TEMPORARY_PASSPORT -> {
+                return Character.toString(documentnumber.charAt(0)).matches("[AB]");
+            }
+            case PASSPORT -> {
+                return Character.toString(documentnumber.charAt(0)).matches("[CFGHJK]");
+            }
+            default -> throw new IllegalArgumentException("IdCard type " + idCardType + " not supported");
         }
-        if (idCardType == IdCard.IdCardType.CHILDREN_PASSPORT) {
-            return Character.toString(documentnumber.charAt(0)).matches("[EFG]");
-        }
-        if (idCardType == IdCard.IdCardType.TEMPORARY_PASSPORT) {
-            return Character.toString(documentnumber.charAt(0)).matches("[AB]");
-        }
-        if (idCardType == IdCard.IdCardType.PASSPORT) {
-            return Character.toString(documentnumber.charAt(0)).matches("[CFGHJK]");
-        }
-        return false;
     }
 
-    private boolean checkIdCardWithoutVersion(IdCard idCard) {
+    private boolean checkCheckDigitIdCardWithoutVersion(IdCard idCard) {
         return this.idCardGenerator.generateCheckDigit(idCard.getDocumentnumber() + idCard.getBirthDate() +
                         idCard.getExpiryDate()).contains(idCard.getCheckDigit());
     }
 
-    private boolean checkIdCardWithVersion(IdCard idCard) {
+    private boolean checkCheckDigitIdCardWithVersion(IdCard idCard) {
         return this.idCardGenerator.generateCheckDigit(idCard.getDocumentnumber() + idCard.getBirthDate() +
                 idCard.getExpiryDate() + idCard.getVersion()).contains(idCard.getCheckDigit());
     }
