@@ -1,8 +1,8 @@
 package de.mirko_werner.testdata;
 
 import de.mirko_werner.testdata.persistence.models.Address;
-import de.mirko_werner.testdata.persistence.models.Country;
-import de.mirko_werner.testdata.persistence.models.State;
+import de.mirko_werner.testdata.persistence.enums.Country;
+import de.mirko_werner.testdata.persistence.enums.State;
 import de.mirko_werner.testdata.repositories.AddressRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,5 +1,8 @@
 package de.mirko_werner.testdata.persistence.models;
 
+import de.mirko_werner.testdata.persistence.enums.Country;
+import de.mirko_werner.testdata.persistence.enums.State;
+
 /**
  * @author Mirko Werner
  * Record for Address objects.
